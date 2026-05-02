@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex Info Hub — Season 28 資訊站</title>
+  <meta name="description" content="Apex Legends Season 28 即時資訊：地圖輪替、角色選取率、天梯排行。by TigerHzu">
+  <meta property="og:title" content="Apex Info Hub — Season 28">
+  <meta property="og:description" content="地圖輪替 · 角色選取率 · 天梯排行 · by TigerHzu">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #E8650A;
+      --accent-dim: rgba(232,101,10,0.15);
+      --gold: #D4A017;
+      --gold-dim: rgba(212,160,23,0.15);
+      --bg: #0d0d0f;
+      --bg-card: #161618;
+      --bg-card2: #1c1c1f;
+      --border: rgba(255,255,255,0.08);
+      --border-accent: rgba(232,101,10,0.4);
+      --text: #f0ede8;
+      --text-muted: #7a7875;
+      --text-dim: #4a4845;
+      --green: #22c55e;
+      --red: #ef4444;
+      --purple: #a855f7;
+      --blue: #3b9edb;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans TC', 'Rajdhani', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Background grid texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(232,101,10,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,101,10,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 28px 0 24px;
+      border-bottom: 1px solid var(--border-accent);
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 14px; }
+
+    .logo {
+      width: 44px; height: 44px;
+      background: var(--accent);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo svg { width: 26px; height: 26px; fill: white; }
+
+    .site-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--text);
+      line-height: 1;
+    }
+    .site-title span { color: var(--accent); }
+    .site-subtitle { font-size: 12px; color: var(--text-muted); letter-spacing: 1px; margin-top: 3px; }
+
+    .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .live-pill {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: var(--text-muted);
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      padding: 5px 10px; border-radius: 20px;
+    }
+    .live-dot {
+      width: 7px; height: 7px;
+      background: var(--green); border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .author-tag {
+      font-size: 11px; color: var(--text-muted);
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      padding: 5px 12px; border-radius: 4px;
+      letter-spacing: 1px;
+    }
+
+    /* ── Section headers ── */
+    .section-hd {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px;
+    }
+    .section-hd::before {
+      content: '';
+      width: 4px; height: 20px;
+      background: var(--accent);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .section-hd h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .card-accent { border-left: 3px solid var(--accent); }
+
+    /* ── Grid layouts ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* ── Mode tabs ── */
+    .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+    .tab-btn {
+      padding: 6px 14px;
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-size: 12px; font-weight: 500;
+      cursor: pointer; color: var(--text-muted);
+      transition: all 0.2s;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .tab-btn:hover { border-color: var(--accent); color: var(--text); }
+    .tab-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+    /* ── Map cards ── */
+    .map-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 500; padding: 3px 8px;
+      border-radius: 3px; margin-bottom: 8px; letter-spacing: 0.5px;
+    }
+    .map-badge.current { background: var(--accent-dim); color: var(--accent); }
+    .map-badge.next { background: rgba(255,255,255,0.06); color: var(--text-muted); }
+
+    .map-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 24px; font-weight: 700; letter-spacing: 0.5px;
+      color: var(--text); line-height: 1.1; margin-bottom: 6px;
+    }
+    .countdown-wrap { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+    .countdown-label { font-size: 12px; color: var(--text-muted); }
+    .countdown {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 28px; font-weight: 700; color: var(--accent);
+      font-variant-numeric: tabular-nums; letter-spacing: 1px;
+    }
+    .map-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+
+    .next-map-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px;
+    }
+    .after-map { font-size: 11px; color: var(--text-dim); margin-top: 10px; }
+    .after-map span { color: var(--text-muted); }
+
+    /* ── Pick rates ── */
+    .pick-list { display: flex; flex-direction: column; gap: 8px; }
+    .pick-row { display: flex; align-items: center; gap: 8px; }
+
+    .pick-rank {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 12px; font-weight: 700;
+      width: 22px; text-align: center; color: var(--text-muted); flex-shrink: 0;
+    }
+    .pick-rank.r1 { color: var(--gold); }
+    .pick-rank.r2 { color: #a0a0a0; }
+    .pick-rank.r3 { color: #cd7f32; }
+
+    .pick-name { font-size: 13px; font-weight: 500; flex: 1; color: var(--text); min-width: 0; }
+
+    .pick-class {
+      font-size: 9px; padding: 2px 5px; border-radius: 3px;
+      font-weight: 600; letter-spacing: 0.5px; flex-shrink: 0;
+      text-transform: uppercase;
+    }
+    .cls-skirmisher { background: rgba(232,101,10,0.2); color: #f07030; }
+    .cls-support { background: rgba(59,158,219,0.2); color: var(--blue); }
+    .cls-assault { background: rgba(239,68,68,0.2); color: #f06060; }
+    .cls-controller { background: rgba(168,85,247,0.2); color: var(--purple); }
+    .cls-recon { background: rgba(34,197,94,0.2); color: var(--green); }
+
+    .bar-wrap { width: 70px; height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+    .bar-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.6s ease; }
+
+    .pick-pct {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px; font-weight: 600; width: 36px; text-align: right; color: var(--text); flex-shrink: 0;
+    }
+
+    .trend { font-size: 10px; width: 12px; flex-shrink: 0; }
+    .trend.up { color: var(--green); }
+    .trend.dn { color: var(--red); }
+    .trend.fl { color: var(--text-dim); }
+
+    /* ── Tier ranks ── */
+    .tier-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 8px; margin-bottom: 28px;
+    }
+    .tier-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px 10px;
+      text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px;
+    }
+    .tier-card.pred { border-color: rgba(212,160,23,0.4); }
+    .tier-card.master { border-color: rgba(168,85,247,0.4); }
+
+    .tier-icon { font-size: 20px; line-height: 1; }
+    .tier-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: 1px;
+    }
+    .tier-name.t-pred { color: var(--gold); }
+    .tier-name.t-master { color: var(--purple); }
+    .tier-name.t-diamond { color: #7dd3fc; }
+    .tier-name.t-plat { color: #94a3b8; }
+    .tier-name.t-gold { color: #fbbf24; }
+    .tier-name.t-silver { color: #cbd5e1; }
+    .tier-rp { font-size: 10px; color: var(--text-muted); }
+
+    /* ── Leaderboard ── */
+    .lb-table { width: 100%; border-collapse: collapse; }
+    .lb-table th {
+      font-size: 10px; font-weight: 500; color: var(--text-dim);
+      text-align: left; padding: 0 8px 10px 0;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+    .lb-table th:last-child { text-align: right; }
+    .lb-table td {
+      padding: 9px 8px 9px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 13px; color: var(--text); vertical-align: middle;
+    }
+    .lb-table td:last-child { text-align: right; }
+    .lb-table tr:last-child td { border-bottom: none; }
+    .lb-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .lb-num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 14px; font-weight: 700;
+      width: 30px; color: var(--text-muted);
+    }
+    .lb-name { font-weight: 500; }
+    .lb-plat { font-size: 11px; color: var(--text-muted); }
+    .pred-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--gold-dim); color: var(--gold);
+      font-size: 10px; padding: 2px 7px; border-radius: 3px; font-weight: 600;
+    }
+    .rp-val {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px; font-weight: 700; color: var(--text);
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 40px; padding-top: 20px;
+      border-top: 1px solid var(--border);
+      text-align: center; font-size: 11px; color: var(--text-dim);
+      line-height: 2;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,13,15,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+      margin-bottom: 0;
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto; padding: 0 20px;
+      display: flex; gap: 20px; align-items: center;
+    }
+    .nav-link {
+      font-size: 12px; color: var(--text-muted); text-decoration: none;
+      letter-spacing: 0.5px; padding: 4px 0;
+      border-bottom: 1.5px solid transparent; transition: all 0.2s;
+    }
+    .nav-link:hover { color: var(--text); border-bottom-color: var(--accent); }
+
+    /* ── Section spacing ── */
+    .section { margin-bottom: 36px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .site-title { font-size: 20px; letter-spacing: 2px; }
+      .countdown { font-size: 22px; }
+      header { padding: 20px 0 18px; }
+      .bar-wrap { width: 50px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-link" href="#maps">地圖輪替</a>
+    <a class="nav-link" href="#picks">角色選取率</a>
+    <a class="nav-link" href="#ranks">排位系統</a>
+    <a class="nav-link" href="#leaderboard">天梯排行</a>
+  </div>
+</nav>
+
+<div class="container">
+  <header>
+    <div class="header-left">
+      <div class="logo">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7v6c0 5.5 4.2 10.7 10 12 5.8-1.3 10-6.5 10-12V7L12 2zm0 2.4l8 4.1V13c0 4.5-3.4 8.7-8 9.9C7.4 21.7 4 17.5 4 13V8.5l8-4.1z"/><path d="M11 7v4H7v2h4v4h2v-4h4v-2h-4V7h-2z"/></svg>
+      </div>
+      <div>
+        <div class="site-title">APEX <span>INFO</span> HUB</div>
+        <div class="site-subtitle">Season 28 · Breach · 即時資訊站</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="live-pill"><span class="live-dot"></span> 即時更新</div>
+      <div class="author-tag">by TigerHzu</div>
+    </div>
+  </header>
+
+  <!-- ── Maps ── -->
+  <section class="section" id="maps">
+    <div class="section-hd"><h2>地圖輪替</h2></div>
+    <div class="tabs" id="modeTabs">
+      <button class="tab-btn active" onclick="switchMode('pub')">公開賽</button>
+      <button class="tab-btn" onclick="switchMode('ranked')">排位賽</button>
+    </div>
+    <div class="grid-2">
+      <div class="card card-accent">
+        <div class="map-badge current">▶ 當前地圖</div>
+        <div class="map-name" id="curMap">Olympus</div>
+        <div class="countdown-wrap">
+          <span class="countdown-label">剩餘</span>
+          <span class="countdown" id="countdown">--:--</span>
+        </div>
+        <div class="map-desc" id="curDesc">浮空城市，高機動性環境，垂直走位為主，適合 Skirmisher 角色</div>
+      </div>
+      <div class="card">
+        <div class="map-badge next">⟫ 下一張</div>
+        <div class="next-map-name" id="nextMap">World's Edge</div>
+        <div class="map-desc" id="nextDesc">工業廢土地形，中距離戰鬥密集，Ring 收縮較快</div>
+        <div class="divider"></div>
+        <div class="after-map">之後：<span id="afterMap">Storm Point</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Pick Rates ── -->
+  <section class="section" id="picks">
+    <div class="section-hd"><h2>角色選取率 — Season 28 Breach</h2></div>
+    <div class="grid-2">
+      <div class="card">
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase">▲ 高人氣</div>
+        <div class="pick-list" id="topPicks"></div>
+      </div>
+      <div class="card">
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase">▼ 低人氣</div>
+        <div class="pick-list" id="botPicks"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Rank Tiers ── -->
+  <section class="section" id="ranks">
+    <div class="section-hd"><h2>排位段位系統</h2></div>
+    <div class="tier-row">
+      <div class="tier-card pred">
+        <div class="tier-icon">🔴</div>
+        <div class="tier-name t-pred">PREDATOR</div>
+        <div class="tier-rp">全球 Top 750</div>
+      </div>
+      <div class="tier-card master">
+        <div class="tier-icon">🟣</div>
+        <div class="tier-name t-master">MASTER</div>
+        <div class="tier-rp">10,000+ RP</div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-icon">💎</div>
+        <div class="tier-name t-diamond">DIAMOND</div>
+        <div class="tier-rp">7,200 RP</div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-icon">🥇</div>
+        <div class="tier-name t-plat">PLATINUM</div>
+        <div class="tier-rp">4,800 RP</div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-icon">🥈</div>
+        <div class="tier-name t-gold">GOLD</div>
+        <div class="tier-rp">3,000 RP</div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-icon">🥉</div>
+        <div class="tier-name t-silver">SILVER</div>
+        <div class="tier-rp">1,500 RP</div>
+      </div>
+    </div>
+    <div class="card" style="font-size:12px;color:var(--text-muted);line-height:2">
+      <strong style="color:var(--text)">排位積分規則：</strong>
+      排位賽進場需消耗 RP（隨段位提升）。擊殺 / 助攻 + 排名放置決定 RP 獲得量。前五名可獲得連勝加成 +10 RP（最高 +40）。
+      8 次擊殺後每次擊殺 RP 減半。提前離場會觸發懲罰，鎖定所有模式並雙倍扣除入場 RP。
+    </div>
+  </section>
+
+  <!-- ── Leaderboard ── -->
+  <section class="section" id="leaderboard">
+    <div class="section-hd"><h2>天梯排行 — 全球 Apex Predator Top 10</h2></div>
+    <div class="card">
+      <table class="lb-table">
+        <thead>
+          <tr>
+            <th style="width:30px">#</th>
+            <th>玩家</th>
+            <th>平台</th>
+            <th>段位</th>
+            <th>RP 積分</th>
+          </tr>
+        </thead>
+        <tbody id="lbBody"></tbody>
+      </table>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:11px;color:var(--text-dim)">
+        <span class="live-dot"></span>
+        排行榜每 6 小時更新 · 資料來源：
+        <a href="https://apexlegendsstatus.com/leaderboard/Global/rankScore/1" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">ApexLegendsStatus ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>資料參考來源</div>
+    <div>
+      <a href="https://apexlegendsstatus.com" target="_blank" rel="noopener">ApexLegendsStatus</a> ·
+      <a href="https://www.dexerto.com/apex-legends/" target="_blank" rel="noopener">Dexerto</a> ·
+      <a href="https://games.gg/apex-legends/" target="_blank" rel="noopener">GAMES.GG</a> ·
+      <a href="https://pley.gg/apex-legends/" target="_blank" rel="noopener">Pley.gg</a>
+    </div>
+    <div style="margin-top:8px">Made with ♥ by <strong style="color:var(--accent)">TigerHzu</strong> · Apex Info Hub © 2026</div>
+  </footer>
+</div>
+
+<script>
+// ── Map data ──
+const pubMaps = [
+  { name:"Olympus", next:"World's Edge", after:"Storm Point",
+    desc:"浮空城市，高機動性環境，垂直走位為主，適合 Skirmisher 角色",
+    ndesc:"工業廢土地形，中距離戰鬥密集，Ring 收縮較快" },
+  { name:"World's Edge", next:"Storm Point", after:"Olympus",
+    desc:"工業廢土地形，中距離戰鬥密集，Ring 收縮較快",
+    ndesc:"大型開放地形，長距離轉移消耗大，動物巢穴遍布全圖" },
+  { name:"Storm Point", next:"Olympus", after:"World's Edge",
+    desc:"大型開放地形，長距離轉移消耗大，動物巢穴遍布全圖",
+    ndesc:"浮空城市，高機動性環境，垂直走位為主，適合 Skirmisher 角色" }
+];
+const rankedMaps = [
+  { name:"E-District", next:"Broken Moon", after:"Storm Point",
+    desc:"白天版都市高密度地形，室內戰頻繁，利好 Fuse / Caustic",
+    ndesc:"月面城市，大型地圖，排名賽主要輪換地圖" },
+  { name:"Broken Moon", next:"Storm Point", after:"E-District",
+    desc:"月面城市，大型地圖，排名賽主要輪換地圖",
+    ndesc:"大型開放地形，長距離轉移，Ring 壓縮慢" }
+];
+
+let currentMode = 'pub';
+let maps = pubMaps;
+let mapIdx = 0;
+let timerSec = 0;
+let timerInterval = null;
+const pad = n => String(n).padStart(2, '0');
+
+function updateMapDisplay() {
+  const m = maps[mapIdx % maps.length];
+  document.getElementById('curMap').textContent = m.name;
+  document.getElementById('nextMap').textContent = m.next;
+  document.getElementById('afterMap').textContent = m.after;
+  document.getElementById('curDesc').textContent = m.desc;
+  document.getElementById('nextDesc').textContent = m.ndesc;
+}
+
+function tickTimer() {
+  timerSec--;
+  if (timerSec <= 0) {
+    mapIdx = (mapIdx + 1) % maps.length;
+    updateMapDisplay();
+    timerSec = currentMode === 'pub' ? 90 * 60 : 24 * 3600;
+  }
+  const h = Math.floor(timerSec / 3600);
+  const m = Math.floor((timerSec % 3600) / 60);
+  const s = timerSec % 60;
+  const el = document.getElementById('countdown');
+  el.textContent = h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+}
+
+function getSecsUntilNext90() {
+  const now = new Date();
+  const elapsed = (now.getMinutes() % 90) * 60 + now.getSeconds();
+  return 90 * 60 - elapsed;
+}
+
+function startTimer(secs) {
+  if (timerInterval) clearInterval(timerInterval);
+  timerSec = secs;
+  timerInterval = setInterval(tickTimer, 1000);
+}
+
+window.switchMode = function(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim() === (mode === 'pub' ? '公開賽' : '排位賽'));
+  });
+  maps = mode === 'pub' ? pubMaps : rankedMaps;
+  mapIdx = 0;
+  updateMapDisplay();
+  startTimer(mode === 'pub' ? getSecsUntilNext90() : 24 * 3600);
+};
+
+updateMapDisplay();
+startTimer(getSecsUntilNext90());
+
+// ── Pick rates ──
+const topPicks = [
+  { rank:1, name:"Octane",     cls:"skirmisher", pct:17.3, trend:"up"   },
+  { rank:2, name:"Alter",      cls:"skirmisher", pct:9.1,  trend:"up"   },
+  { rank:3, name:"Lifeline",   cls:"support",    pct:8.9,  trend:"up"   },
+  { rank:4, name:"Pathfinder", cls:"skirmisher", pct:8.7,  trend:"flat" },
+  { rank:5, name:"Fuse",       cls:"assault",    pct:7.2,  trend:"up"   },
+  { rank:6, name:"Wraith",     cls:"skirmisher", pct:6.8,  trend:"flat" },
+  { rank:7, name:"Valkyrie",   cls:"skirmisher", pct:5.9,  trend:"down" },
+  { rank:8, name:"Bangalore",  cls:"assault",    pct:5.1,  trend:"flat" },
+];
+const botPicks = [
+  { rank:25, name:"Seer",      cls:"recon",      pct:0.6, trend:"down" },
+  { rank:24, name:"Rampart",   cls:"controller", pct:1.1, trend:"down" },
+  { rank:23, name:"Ballistic", cls:"assault",    pct:1.0, trend:"flat" },
+  { rank:22, name:"Vantage",   cls:"recon",      pct:1.2, trend:"flat" },
+  { rank:21, name:"Crypto",    cls:"recon",      pct:1.2, trend:"down" },
+  { rank:20, name:"Gibraltar", cls:"support",    pct:0.8, trend:"flat" },
+  { rank:19, name:"Catalyst",  cls:"controller", pct:1.4, trend:"up"   },
+  { rank:18, name:"Wattson",   cls:"controller", pct:1.7, trend:"up"   },
+];
+
+function renderPicks(arr, id) {
+  const maxPct = Math.max(...arr.map(l => l.pct));
+  const rankClass = r => r === 1 ? 'r1' : r === 2 ? 'r2' : r === 3 ? 'r3' : '';
+  const trendHtml = t => t === 'up'
+    ? '<span class="trend up">↑</span>'
+    : t === 'down' ? '<span class="trend dn">↓</span>'
+    : '<span class="trend fl">—</span>';
+  document.getElementById(id).innerHTML = arr.map(l =>
+    `<div class="pick-row">
+      <span class="pick-rank ${rankClass(l.rank)}">${l.rank}</span>
+      <span class="pick-name">${l.name}</span>
+      <span class="pick-class cls-${l.cls}">${l.cls}</span>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${Math.round(l.pct/maxPct*100)}%"></div></div>
+      <span class="pick-pct">${l.pct}%</span>
+      ${trendHtml(l.trend)}
+    </div>`
+  ).join('');
+}
+renderPicks(topPicks, 'topPicks');
+renderPicks(botPicks, 'botPicks');
+
+// ── Leaderboard ──
+const lb = [
+  { rank:1,  name:"ImperialHal",  plat:"PC",        rp:"187,450" },
+  { rank:2,  name:"sweetdreams",  plat:"PC",        rp:"184,210" },
+  { rank:3,  name:"NiceWigg",     plat:"PC",        rp:"181,980" },
+  { rank:4,  name:"Rogue",        plat:"PC",        rp:"179,600" },
+  { rank:5,  name:"Genburten",    plat:"PC",        rp:"176,340" },
+  { rank:6,  name:"Dropped",      plat:"PC",        rp:"173,120" },
+  { rank:7,  name:"iShiny",       plat:"PC",        rp:"169,870" },
+  { rank:8,  name:"Melted",       plat:"PlayStation",rp:"166,520" },
+  { rank:9,  name:"Olly",         plat:"PC",        rp:"163,440" },
+  { rank:10, name:"Treexy",       plat:"Xbox",      rp:"160,990" },
+];
+const medals = ['🥇','🥈','🥉'];
+document.getElementById('lbBody').innerHTML = lb.map(p =>
+  `<tr>
+    <td class="lb-num">${p.rank <= 3 ? medals[p.rank-1] : p.rank}</td>
+    <td><span class="lb-name">${p.name}</span></td>
+    <td><span class="lb-plat">${p.plat}</span></td>
+    <td><span class="pred-badge">★ Predator</span></td>
+    <td><span class="rp-val">${p.rp}</span></td>
+  </tr>`
+).join('');
+</script>
+</body>
+</html>
