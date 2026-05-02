@@ -2166,6 +2166,88 @@ body.intro-lock { overflow: hidden; }
   }
 }
 
+
+
+/* ── Live Ranked Leaderboard: 4 platforms ── */
+.live-ranked-card { margin-top:18px; }
+.platform-tabs { display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 16px; }
+.platform-tab {
+  background:var(--bg-card2); border:1px solid var(--border); color:var(--text-muted);
+  border-radius:999px; padding:7px 12px; font-size:12px; cursor:pointer;
+  transition:all .18s ease; font-family:'Noto Sans TC', sans-serif;
+}
+.platform-tab:hover, .platform-tab.active { color:#fff; border-color:var(--accent); box-shadow:0 0 18px rgba(88,230,255,.18); }
+.live-ranked-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
+.platform-board { background:rgba(6,10,26,.42); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.platform-board-hd { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:12px 14px; border-bottom:1px solid rgba(255,255,255,.06); }
+.platform-name { font-family:'Rajdhani', sans-serif; font-weight:800; letter-spacing:1px; font-size:18px; }
+.platform-state { font-size:10px; color:var(--text-dim); }
+.platform-table { width:100%; border-collapse:collapse; }
+.platform-table td { padding:8px 10px; border-bottom:1px solid rgba(255,255,255,.04); font-size:12px; vertical-align:middle; }
+.platform-table tr:last-child td { border-bottom:0; }
+.platform-table .rank-no { width:42px; font-family:'Rajdhani'; font-weight:800; color:var(--gold); }
+.platform-table .player-name { color:var(--text); font-weight:600; max-width:170px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.platform-table .player-rp { text-align:right; font-family:'Rajdhani'; font-weight:800; color:var(--accent); }
+.leaderboard-error { padding:16px; color:var(--text-muted); font-size:12px; line-height:1.8; }
+@media (max-width:720px) { .live-ranked-grid { grid-template-columns:1fr; } }
+
+
+
+/* ── Steam launch options section ── */
+.steam-launch-card { overflow:hidden; }
+.steam-launch-intro { color:var(--text-muted); font-size:12px; line-height:1.9; margin-bottom:14px; }
+.launch-category { margin-top:16px; }
+.launch-category:first-of-type { margin-top:0; }
+.launch-category-title {
+  display:flex; align-items:center; gap:8px;
+  font-family:'Rajdhani', 'Noto Sans TC', sans-serif;
+  font-size:16px; font-weight:800; letter-spacing:1px;
+  color:var(--text); margin-bottom:10px;
+}
+.launch-category-title::before {
+  content:''; width:6px; height:18px; border-radius:999px;
+  background:linear-gradient(180deg, var(--accent), var(--cosmic));
+  box-shadow:0 0 16px rgba(88,230,255,.35);
+}
+.launch-grid { display:grid; grid-template-columns:1fr; gap:8px; }
+.launch-row {
+  display:grid; grid-template-columns:minmax(220px, 1fr) minmax(220px, 1.08fr);
+  gap:12px; align-items:center;
+  padding:10px 12px; border:1px solid rgba(144,205,255,.12);
+  background:rgba(7,10,25,.48); border-radius:10px;
+}
+.launch-desc { color:var(--text); font-size:13px; line-height:1.55; }
+.launch-code {
+  justify-self:end; width:100%; max-width:420px;
+  font-family:Consolas, 'Courier New', monospace;
+  font-size:12px; font-weight:700; line-height:1.5;
+  color:var(--accent);
+  background:rgba(0,0,0,.32); border:1px solid rgba(88,230,255,.22);
+  border-radius:8px; padding:8px 10px;
+  overflow-x:auto; white-space:nowrap;
+  box-shadow:inset 0 0 18px rgba(88,230,255,.045);
+}
+.launch-note {
+  margin-top:14px; padding:12px 14px; border-radius:10px;
+  background:rgba(247,201,92,.08); border:1px solid rgba(247,201,92,.18);
+  color:var(--text-muted); font-size:12px; line-height:1.8;
+}
+.launch-note strong { color:var(--gold); }
+.launch-copy-block {
+  margin-top:14px; display:grid; gap:10px;
+}
+.launch-copy-title { font-size:12px; color:var(--text-muted); letter-spacing:.8px; }
+.launch-copy-code {
+  font-family:Consolas, 'Courier New', monospace;
+  font-size:12px; color:var(--accent);
+  background:rgba(0,0,0,.38); border:1px solid rgba(88,230,255,.18);
+  border-radius:10px; padding:12px; white-space:pre-wrap; word-break:break-word;
+}
+@media (max-width:720px) {
+  .launch-row { grid-template-columns:1fr; gap:6px; }
+  .launch-code { justify-self:stretch; max-width:none; }
+}
+
 </style>
 </head>
 <body>
@@ -2187,8 +2269,7 @@ body.intro-lock { overflow: hidden; }
   <div class="nav-inner">
     <a class="nav-link" href="#maps">地圖輪替</a>
     <a class="nav-link" href="#picks">角色選取率</a>
-    <a class="nav-link" href="#ranks">排位系統</a>
-    <a class="nav-link" href="#leaderboard">天梯排行</a>
+    <a class="nav-link" href="#steam-launch">Steam啟動項</a>
   </div>
 </nav>
 
@@ -2289,142 +2370,108 @@ body.intro-lock { overflow: hidden; }
     </div>
 
     </div>
-    
-    <div class="pick-sync-toolbar">
-      <div class="pick-sync-status" id="pickSyncStatus">
-        網頁開啟時會自動抓取各牌位的 ApexLegendsStatus 選取率；若瀏覽器阻擋外站資料，會保留快照資料。
-      </div>
-      <a class="btn-small secondary" href="https://apexlegendsstatus.com/game-stats/legends-pick-rates/Masterpred" target="_blank" rel="noopener" style="text-decoration:none">打開原站 ↗</a>
-    </div>
-
-    <div class="pick-rank-title" id="pickRankTitle">目前顯示：Master / Apex Predator｜大師 / 獵殺</div>
-    <div class="source-note" id="legendCountNote">目前顯示：同步後會列出完整 27 位 Legend。</div>
-    <div class="source-note pick-source-note">Sparrow 圖片已改用 EA 官方角色頁圖源，並加入備援圖源。</div>
     <div class="card legend-card-shell">
       <div class="legend-grid" id="legendGrid"></div>
     </div>
-
-    <div class="source-note pick-source-note">
-      角色選取率已依你提供的 ApexLegendsStatus 截圖修正：Master / Apex Predator｜Any game mode。
-      目前為前端快照資料；若官方頁面更新，需再手動更新數值。
-    </div>
   </section>
 
-  
-    <div class="source-note pick-source-note">Mad Maggie 圖片已改用 EA 官方角色圖源；下方也嵌入 ApexLegendsStatus 原站頁面作為即時資料檢視。</div>
 
-    <div class="source-note pick-source-note">
-點上方任一牌位卡會讀取該卡的 data-worker-key，呼叫對應 Worker endpoint，並即時更新下方完整 27 位 Legend pick rate；不再只顯示前幾名或低選取率角色。
-</div>
-<div class="als-live-card" id="alsLiveCard">
-      <div class="als-embed-head">
-        <div>
-          <strong>ApexLegendsStatus 即時資料橋接</strong>
-          <span>Master / Apex Predator pick rates｜透過你自己的 Worker 抓取後顯示</span>
-        </div>
-        <a class="btn-small secondary" href="https://apexlegendsstatus.com/game-stats/legends-pick-rates/Masterpred" target="_blank" rel="noopener" style="text-decoration:none">打開原站 ↗</a>
+
+  <!-- ── Steam Launch Options ── -->
+  <section class="section" id="steam-launch">
+    <div class="section-hd"><h2>Steam啟動項</h2></div>
+    <div class="card steam-launch-card">
+      <div class="steam-launch-intro">
+        下面整理 Apex Legends 常見 Steam 啟動項。左邊是用途，右邊是可複製到 Steam「啟動選項」的指令；部分指令可能會因遊戲版本更新而失效，建議一次只加自己需要的項目。
       </div>
 
-      <div class="worker-config">
-        <label for="workerUrlInput">Worker API Base URL <span class="worker-connected-badge">已連接</span></label>
-        <div class="worker-config-row">
-          <input class="input" id="workerUrlInput" value="https://apex-pickrate-api.naughtytiger06.workers.dev/pickrates" placeholder="Worker API Base URL Base">
-          <button class="btn-small" type="button" onclick="saveWorkerUrl()">重新同步</button>
-        </div>
-        <div class="source-note">
-          已接上 Cloudflare Worker：開啟此網頁後會自動抓 ApexLegendsStatus；每個牌位卡已內建 URL key，切換牌位時會在本站重畫角色卡片。
+      <div class="launch-category">
+        <div class="launch-category-title">2K 超分解析度</div>
+        <div class="launch-grid">
+          <div class="launch-row"><div class="launch-desc">超分 2K｜4:3</div><code class="launch-code">-w 2560 -h 1920</code></div>
+          <div class="launch-row"><div class="launch-desc">超分 2K｜16:10</div><code class="launch-code">-w 2560 -h 1600</code></div>
         </div>
       </div>
 
-      <div class="pick-sync-status warn" id="workerPickStatus">
-        已內建 Worker API；每個牌位卡都藏有對應 URL key，點牌位會自動抓該牌位資料。
-      </div>
-
-      <div class="legend-grid worker-live-grid" id="workerLiveGrid">
-        <article class="legend-card live-placeholder">
-          <div class="legend-overlay">
-            <div class="legend-name">等待 Worker</div>
-            <div class="legend-pct">Live</div>
-            <div class="legend-meta">貼上 Worker URL 後顯示即時資料</div>
-          </div>
-        </article>
-      </div>
-    </div>
-
-<!-- ── Rank Tiers ── -->
-  <section class="section" id="ranks">
-    <div class="section-hd"><h2>排位段位系統</h2></div>
-    <div class="card" style="font-size:12px;color:var(--text-muted);line-height:2">
-      <strong style="color:var(--text)">排位積分規則：</strong>
-      排位賽進場需消耗 RP（隨段位提升）。擊殺 / 助攻 + 排名放置決定 RP 獲得量。前五名可獲得連勝加成 +10 RP（最高 +40）。
-      8 次擊殺後每次擊殺 RP 減半。提前離場會觸發懲罰，鎖定所有模式並雙倍扣除入場 RP。
-    </div>
-  </section>
-
-  <!-- ── Ranked distribution chart ── -->
-  <section class="section" id="leaderboard">
-    <div class="section-hd"><h2>牌位分佈統計</h2></div>
-    <div class="card rankdist-card">
-      <div class="rankdist-header">
-        <div>
-          <div class="rankdist-title">Ranked distribution statistics</div>
-          <div class="rankdist-sub">做成像 ApexLegendsStatus 的可互動式圖表；無法即時同步時，改用圖表互動檢視。</div>
-        </div>
-        <button class="btn-small" onclick="openDistributionPage()">打開 Apex Status 分布頁 ↗</button>
-      </div>
-
-      <div class="rankdist-toolbar">
-        <div class="rankdist-control">
-          <label for="rankSplitSelect">Season / Split</label>
-          <select class="select" id="rankSplitSelect">
-            <option value="current">Current Split</option>
-            <option value="s28s1">Season 28 Split 1</option>
-            <option value="s27s2">Season 27 Split 2</option>
-          </select>
-        </div>
-        <div class="rankdist-control">
-          <label for="rankViewSelect">顯示方式</label>
-          <select class="select" id="rankViewSelect">
-            <option value="percent">View by %</option>
-            <option value="players">View by total players</option>
-          </select>
-        </div>
-        <div class="rankdist-control">
-          <label for="rankLabelToggle">資料標籤</label>
-          <select class="select" id="rankLabelToggle">
-            <option value="off">Tooltip only</option>
-            <option value="on">Show value labels</option>
-          </select>
+      <div class="launch-category">
+        <div class="launch-category-title">連線與穩定性</div>
+        <div class="launch-grid">
+          <div class="launch-row"><div class="launch-desc">無超時（防炸房掛）</div><code class="launch-code">-notimeout</code></div>
         </div>
       </div>
 
-      <div class="rankdist-summary" id="rankdistSummary">
-        <div class="summary-chip">
-          <span>最大族群</span>
-          <strong id="summaryTopTier">—</strong>
-        </div>
-        <div class="summary-chip">
-          <span>高端占比</span>
-          <strong id="summaryHighTier">—</strong>
-        </div>
-        <div class="summary-chip">
-          <span>總追蹤玩家</span>
-          <strong id="summaryTotalPlayers">—</strong>
+      <div class="launch-category">
+        <div class="launch-category-title">畫面比例、解析度與顯示模式</div>
+        <div class="launch-grid">
+          <div class="launch-row"><div class="launch-desc">超寬螢幕拉伸解析度全螢幕</div><code class="launch-code">+mat_wide_pillarbox 0</code></div>
+          <div class="launch-row"><div class="launch-desc">4:3 解析度全螢幕</div><code class="launch-code">+mat_letterbox_aspect_min 1.0</code></div>
+          <div class="launch-row"><div class="launch-desc">類似 DX11 切換視窗時讓 Apex 最小化</div><code class="launch-code">+mat_minimize_on_alt_tab 1</code></div>
+          <div class="launch-row"><div class="launch-desc">用啟動項設定遊戲內解析度（以 16:9 1080p 為例）</div><code class="launch-code">-w 1920 -h 1080</code></div>
+          <div class="launch-row"><div class="launch-desc">以全螢幕模式啟動遊戲</div><code class="launch-code">-fullscreen</code></div>
+          <div class="launch-row"><div class="launch-desc">以視窗模式啟動遊戲</div><code class="launch-code">-window</code></div>
+          <div class="launch-row"><div class="launch-desc">以無邊框模式啟動遊戲</div><code class="launch-code">-noborder</code></div>
+          <div class="launch-row"><div class="launch-desc">以無邊框視窗模式啟動遊戲</div><code class="launch-code">-window -noborder</code></div>
         </div>
       </div>
 
-      <div class="rankdist-chart-wrap">
-        <canvas id="rankDistributionChart"></canvas>
+      <div class="launch-category">
+        <div class="launch-category-title">滑鼠輸入</div>
+        <div class="launch-grid">
+          <div class="launch-row"><div class="launch-desc">使用原始滑鼠速度</div><code class="launch-code">-noforcemspd</code></div>
+          <div class="launch-row"><div class="launch-desc">保留原始加速曲線</div><code class="launch-code">-noforcemaccel</code></div>
+          <div class="launch-row"><div class="launch-desc">不覆蓋使用者自訂參數</div><code class="launch-code">-noforcemparms</code></div>
+        </div>
       </div>
 
-      <div class="source-note" style="margin-top:14px">
-        <span class="live-dot"></span>
-        圖表風格參考 <a href="https://apexlegendsstatus.com/game-stats/ranked-distribution" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">Apex Legends Status</a>。
-        這裡改成互動式分佈圖，避免即時同步失敗時顯示錯誤排行榜資料。
+      <div class="launch-category">
+        <div class="launch-category-title">音效與語音</div>
+        <div class="launch-grid">
+          <div class="launch-row"><div class="launch-desc">以立體聲模式啟動遊戲</div><code class="launch-code">+miles_channels 2</code></div>
+          <div class="launch-row"><div class="launch-desc">以 7.1 聲道模式啟動遊戲</div><code class="launch-code">+miles_channels 8</code></div>
+          <div class="launch-row"><div class="launch-desc">將配音改為中文</div><code class="launch-code">+miles_language mandarin</code></div>
+          <div class="launch-row"><div class="launch-desc">將配音改為英語</div><code class="launch-code">+miles language englishe</code></div>
+          <div class="launch-row"><div class="launch-desc">將配音改為日語（需額外下載語音包）</div><code class="launch-code">+miles_language janpanese</code></div>
+        </div>
+      </div>
+
+      <div class="launch-category">
+        <div class="launch-category-title">效能、幀率與資訊顯示</div>
+        <div class="launch-grid">
+          <div class="launch-row"><div class="launch-desc">將遊戲執行緒優先級設定為高</div><code class="launch-code">-high</code></div>
+          <div class="launch-row"><div class="launch-desc">解鎖幀率</div><code class="launch-code">+fps_max 0</code></div>
+          <div class="launch-row"><div class="launch-desc">解鎖幀率（另一種寫法）</div><code class="launch-code">+fps_max unlimited</code></div>
+          <div class="launch-row"><div class="launch-desc">鎖定幀率上限（以 144Hz 為例）</div><code class="launch-code">+fps_max 144</code></div>
+          <div class="launch-row"><div class="launch-desc">大廳解鎖 60 幀限制</div><code class="launch-code">+lobby_max_fps 0</code></div>
+          <div class="launch-row"><div class="launch-desc">提高遊戲幀數（CPU 核心數 ≥ 6，且使用高回報率外設時可嘗試）</div><code class="launch-code">-no_render_on_input_thread</code></div>
+          <div class="launch-row"><div class="launch-desc">強制 120 FOV</div><code class="launch-code">+cl_fovScale 1.7</code></div>
+          <div class="launch-row"><div class="launch-desc">將擊殺血霧改為紅光</div><code class="launch-code">+cl_is_softened_locale 1</code></div>
+          <div class="launch-row"><div class="launch-desc">在遊戲中顯示名稱、位置、角度和速度</div><code class="launch-code">+cl_showpos 1</code></div>
+          <div class="launch-row"><div class="launch-desc">顯示效能與網路參數</div><code class="launch-code">+cl_showfps 1</code></div>
+          <div class="launch-row"><div class="launch-desc">跳過開場動畫</div><code class="launch-code">-dev</code></div>
+          <div class="launch-row"><div class="launch-desc">跳過開場動畫（另一種寫法）</div><code class="launch-code">-novid</code></div>
+        </div>
+      </div>
+
+      <div class="launch-category">
+        <div class="launch-category-title">社群服自用</div>
+        <div class="launch-grid">
+          <div class="launch-row"><div class="launch-desc">簡體中文</div><code class="launch-code">-language schinese</code></div>
+          <div class="launch-row"><div class="launch-desc">繁體中文</div><code class="launch-code">-language tchinese</code></div>
+          <div class="launch-row"><div class="launch-desc">社群服專用 4:3 全螢幕</div><code class="launch-code">+mat_letterbox_aspect_threshold 0</code></div>
+          <div class="launch-row"><div class="launch-desc">110 FOV 下開啟 120 FOV</div><code class="launch-code">+cl_fovscale 1.7</code></div>
+        </div>
+      </div>
+
+      <div class="launch-copy-block">
+        <div class="launch-copy-title">常用組合範例（可依需求修改）</div>
+        <div class="launch-copy-code">+fps_max 144 -dev -high +mat_letterbox_aspect_min 1.0 -w 2560 -h 1600</div>
+      </div>
+
+      <div class="launch-note">
+        <strong>提醒：</strong>部分指令可能因遊戲更新、官方限制或社群服環境不同而不生效。像語音語言指令中你提供的 <code>+miles language englishe</code>、<code>+miles_language janpanese</code> 我有保留原始指令拼法，避免改動後和你原本來源不一致。
       </div>
     </div>
   </section>
-
 <footer>
     <div>資料參考來源</div>
     <div>
@@ -2633,7 +2680,7 @@ const pickRatesByRank = {
 
 window.switchPickRank = function(key) {
   const data = pickRatesByRank[key] || pickRatesByRank.predator;
-  document.getElementById('pickRankTitle').textContent = `目前顯示：${data.label}`;
+  { const title = document.getElementById('pickRankTitle'); if (title) title.textContent = `目前顯示：${data.label}`; }
   document.querySelectorAll('.tier-card[data-pick-key]').forEach(card => {
     card.classList.toggle('active-rank', card.dataset.pickKey === key);
   });
@@ -2872,7 +2919,7 @@ async function syncPickRatesForRank(key, opts = { silent:false }) {
 
 window.switchPickRank = function(key) {
   const data = pickRatesByRank[key] || pickRatesByRank.predator;
-  document.getElementById('pickRankTitle').textContent = `目前顯示：${data.label}`;
+  { const title = document.getElementById('pickRankTitle'); if (title) title.textContent = `目前顯示：${data.label}`; }
   document.querySelectorAll('.tier-card[data-pick-key]').forEach(card => {
     card.classList.toggle('active-rank', card.dataset.pickKey === key);
   });
@@ -3012,435 +3059,6 @@ window.addEventListener('load', function() {
   });
 })();
 </script>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-
-<script>
-(function() {
-  const labels = [
-    'Rookie IV','Rookie III','Rookie II','Rookie I',
-    'Bronze IV','Bronze III','Bronze II','Bronze I',
-    'Silver IV','Silver III','Silver II','Silver I',
-    'Gold IV','Gold III','Gold II','Gold I',
-    'Platinum IV','Platinum III','Platinum II','Platinum I',
-    'Diamond IV','Diamond III','Diamond II','Diamond I',
-    'Master','Apex Predator'
-  ];
-
-  const datasetsMap = {
-    current: {
-      name: 'Current Split',
-      totalPlayers: 3280000,
-      values: [1.2,0.4,0.3,0.8,4.0,1.5,1.2,1.0,5.2,2.7,2.1,1.8,5.2,4.3,3.7,3.4,5.2,6.4,5.8,5.8,10.1,12.9,6.9,3.6,2.2,0.4]
-    },
-    s28s1: {
-      name: 'Season 28 Split 1',
-      totalPlayers: 3110000,
-      values: [1.5,0.7,0.5,1.0,4.4,1.8,1.4,1.2,5.6,3.0,2.5,2.1,5.0,4.4,3.9,3.5,5.0,5.9,5.6,5.4,9.3,11.2,6.2,3.4,1.8,0.3]
-    },
-    s27s2: {
-      name: 'Season 27 Split 2',
-      totalPlayers: 2940000,
-      values: [2.0,0.8,0.6,1.2,5.1,2.0,1.7,1.4,6.0,3.3,2.7,2.2,5.4,4.8,4.1,3.6,4.8,5.2,4.8,4.5,8.0,9.1,5.4,2.9,1.2,0.2]
-    }
-  };
-
-  function colorForLabel(label) {
-    if (label.startsWith('Rookie')) return '#63666d';
-    if (label.startsWith('Bronze')) return '#d28432';
-    if (label.startsWith('Silver')) return '#c5c5c5';
-    if (label.startsWith('Gold')) return '#f5d400';
-    if (label.startsWith('Platinum')) return '#9fd7df';
-    if (label.startsWith('Diamond')) return '#3d8be0';
-    if (label.startsWith('Master')) return '#9f3edb';
-    return '#ff3048'; // Apex Predator
-  }
-
-  const colors = labels.map(colorForLabel);
-
-  const valueLabelPlugin = {
-    id: 'valueLabelPlugin',
-    afterDatasetsDraw(chart) {
-      if (document.getElementById('rankLabelToggle')?.value !== 'on') return;
-      const {ctx} = chart;
-      const meta = chart.getDatasetMeta(0);
-      ctx.save();
-      ctx.font = '11px Arial';
-      ctx.fillStyle = 'rgba(240,244,255,.9)';
-      ctx.textAlign = 'center';
-      meta.data.forEach((bar, i) => {
-        const raw = chart.data.datasets[0].data[i];
-        const text = document.getElementById('rankViewSelect').value === 'percent'
-          ? raw.toFixed(1) + '%'
-          : formatNumber(raw);
-        ctx.fillText(text, bar.x, bar.y - 6);
-      });
-      ctx.restore();
-    }
-  };
-
-  function formatNumber(n) {
-    return new Intl.NumberFormat('en-US').format(Math.round(n));
-  }
-
-  function getCurrentData() {
-    const splitKey = document.getElementById('rankSplitSelect').value;
-    const mode = document.getElementById('rankViewSelect').value;
-    const split = datasetsMap[splitKey];
-    const raw = split.values.slice();
-    const values = mode === 'players'
-      ? raw.map(v => split.totalPlayers * (v / 100))
-      : raw;
-    return { split, values, raw };
-  }
-
-  function computeSummary(raw, split) {
-    let maxIdx = 0;
-    for (let i = 1; i < raw.length; i++) if (raw[i] > raw[maxIdx]) maxIdx = i;
-    const highTier = raw.slice(20).reduce((a,b) => a+b, 0); // Diamond and above
-    document.getElementById('summaryTopTier').textContent = labels[maxIdx] + ' · ' + raw[maxIdx].toFixed(1) + '%';
-    document.getElementById('summaryHighTier').textContent = highTier.toFixed(1) + '% (Diamond+)';
-    document.getElementById('summaryTotalPlayers').textContent = formatNumber(split.totalPlayers);
-  }
-
-  function openDistributionPage() {
-    window.open('https://apexlegendsstatus.com/game-stats/ranked-distribution', '_blank', 'noopener');
-  }
-  window.openDistributionPage = openDistributionPage;
-
-  function createChart() {
-    if (!window.Chart) {
-      document.querySelector('.rankdist-chart-wrap').innerHTML =
-        '<div style="display:grid;place-items:center;height:100%;color:var(--text-muted)">圖表元件載入失敗，請連上網路後重新打開此頁。</div>';
-      return;
-    }
-
-    const ctx = document.getElementById('rankDistributionChart').getContext('2d');
-    const current = getCurrentData();
-    computeSummary(current.raw, current.split);
-
-    const chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          label: current.split.name,
-          data: current.values,
-          backgroundColor: colors,
-          borderColor: colors,
-          borderWidth: 1,
-          hoverBorderWidth: 2,
-          borderRadius: 0,
-          maxBarThickness: 36
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: { duration: 500 },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: 'rgba(9,14,30,.96)',
-            borderColor: 'rgba(120,230,255,.22)',
-            borderWidth: 1,
-            titleColor: '#fff',
-            bodyColor: '#dfe7ff',
-            callbacks: {
-              label(context) {
-                const raw = getCurrentData().raw[context.dataIndex];
-                const val = context.raw;
-                if (document.getElementById('rankViewSelect').value === 'players') {
-                  return `估算玩家數：${formatNumber(val)}（${raw.toFixed(1)}%）`;
-                }
-                return `占比：${raw.toFixed(1)}%`;
-              }
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid: { color: 'rgba(255,255,255,.04)' },
-            ticks: {
-              color: 'rgba(240,244,255,.92)',
-              maxRotation: 24,
-              minRotation: 24,
-              font: { size: 11 }
-            }
-          },
-          y: {
-            beginAtZero: true,
-            grid: { color: 'rgba(255,255,255,.05)' },
-            ticks: {
-              color: 'rgba(240,244,255,.88)',
-              callback(value) {
-                if (document.getElementById('rankViewSelect').value === 'players') {
-                  if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
-                  if (value >= 1000) return (value / 1000).toFixed(0) + 'K';
-                }
-                return value;
-              }
-            },
-            title: {
-              display: true,
-              color: 'rgba(240,244,255,.9)',
-              text() {
-                return document.getElementById('rankViewSelect').value === 'players'
-                  ? 'estimated tracked players'
-                  : '% of players';
-              }
-            }
-          }
-        }
-      },
-      plugins: [valueLabelPlugin]
-    });
-
-    function refreshChart() {
-      const current = getCurrentData();
-      chart.data.datasets[0].label = current.split.name;
-      chart.data.datasets[0].data = current.values;
-      chart.options.scales.y.title.text = document.getElementById('rankViewSelect').value === 'players'
-        ? 'estimated tracked players'
-        : '% of players';
-      chart.update();
-      computeSummary(current.raw, current.split);
-    }
-
-    document.getElementById('rankSplitSelect').addEventListener('change', refreshChart);
-    document.getElementById('rankViewSelect').addEventListener('change', refreshChart);
-    document.getElementById('rankLabelToggle').addEventListener('change', refreshChart);
-  }
-
-  window.addEventListener('load', function() {
-    setTimeout(createChart, 80);
-  });
-})();
-</script>
-
-
-
-<script>
-(function() {
-  function setWorkerStatus(text, type = 'warn') {
-    const el = document.getElementById('workerPickStatus');
-    if (!el) return;
-    el.className = `pick-sync-status ${type}`;
-    el.textContent = text;
-  }
-
-  window.saveWorkerUrl = function() {
-    const input = document.getElementById('workerUrlInput');
-    let url = (input?.value || '').trim();
-
-    if (!url) {
-      setWorkerStatus('請先貼上 Worker URL。', 'err');
-      return;
-    }
-
-    if (!/^https?:\/\//i.test(url)) {
-      url = 'https://' + url;
-      if (input) input.value = url;
-    }
-
-    localStorage.setItem('alsWorkerUrl', url);
-    loadWorkerPickRates();
-  };
-
-  function normalizeWorkerRows(data) {
-    if (Array.isArray(data)) return data;
-    if (Array.isArray(data.legends)) return data.legends;
-    if (Array.isArray(data.rows)) return data.rows;
-    if (Array.isArray(data.data)) return data.data;
-    return [];
-  }
-
-  function getClassForLegend(name) {
-    if (typeof normalizeLegendClass === 'function') return normalizeLegendClass(name);
-    const cls = {
-      'Mad Maggie':'assault', 'Bangalore':'assault', 'Fuse':'assault', 'Ash':'assault', 'Ballistic':'assault',
-      'Alter':'skirmisher', 'Octane':'skirmisher', 'Valkyrie':'skirmisher', 'Revenant':'skirmisher', 'Wraith':'skirmisher', 'Horizon':'skirmisher', 'Pathfinder':'skirmisher',
-      'Conduit':'support', 'Gibraltar':'support', 'Lifeline':'support', 'Loba':'support', 'Newcastle':'support', 'Mirage':'support',
-      'Crypto':'recon', 'Seer':'recon', 'Vantage':'recon', 'Bloodhound':'recon', 'Sparrow':'recon',
-      'Wattson':'controller', 'Caustic':'controller', 'Catalyst':'controller', 'Rampart':'controller'
-    };
-    return cls[name] || 'skirmisher';
-  }
-
-  window.loadWorkerPickRates = async function() {
-    const input = document.getElementById('workerUrlInput');
-    let saved = localStorage.getItem('alsWorkerUrl') || (input?.value || '').trim();
-
-    if (input && saved && !input.value) input.value = saved;
-
-    if (!saved) {
-      setWorkerStatus('尚未設定 Worker URL。請把 Cloudflare Worker 部署後的網址貼到上方。', 'warn');
-      return;
-    }
-
-    if (!/^https?:\/\//i.test(saved)) {
-      saved = 'https://' + saved;
-      localStorage.setItem('alsWorkerUrl', saved);
-      if (input) input.value = saved;
-    }
-
-    try {
-      setWorkerStatus('正在透過 Worker 抓取 ApexLegendsStatus 即時資料...', 'warn');
-
-      const res = await fetch(saved, { cache: 'no-store', mode: 'cors' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-      const json = await res.json();
-      const rows = normalizeWorkerRows(json)
-        .filter(x => x && x.name && Number.isFinite(Number(x.pct)))
-        .map((x, i) => ({
-          rank: Number(x.rank || i + 1),
-          name: String(x.name),
-          pct: Number(x.pct),
-          cls: x.cls || getClassForLegend(String(x.name)),
-          trend: x.trend || 'flat'
-        }))
-        .sort((a, b) => a.rank - b.rank);
-
-      if (rows.length < 8) {
-        console.log('Worker response:', json);
-        throw new Error('Worker 回傳資料太少或格式不正確');
-      }
-
-      if (typeof renderLegendCards === 'function') {
-        const workerGrid = document.getElementById('workerLiveGrid');
-        if (workerGrid) workerGrid.classList.add('full-legend-grid');
-        renderLegendCards(rows, 'workerLiveGrid');
-      }
-
-      const data = {
-        label: 'Master / Apex Predator｜Worker 即時資料',
-        top: rows.slice(0, 8),
-        bot: rows.slice(-7)
-      };
-
-      if (window.pickRatesByRank || typeof pickRatesByRank !== 'undefined') {
-        pickRatesByRank.predator = data;
-        pickRatesByRank.master = data;
-        const active = document.querySelector('.tier-card.active-rank')?.dataset.pickKey || 'predator';
-        if (active === 'predator' || active === 'master') switchPickRank(active);
-      }
-
-      const stamp = json.updatedAt ? `｜更新：${json.updatedAt}` : '';
-      setWorkerStatus(`同步成功：已透過 Worker 載入 ${rows.length} 位 Legend。${stamp}`, 'ok');
-    } catch (err) {
-      setWorkerStatus(`Worker 同步失敗：${err.message || err}。請確認 Worker URL 正確、已部署，且能在瀏覽器開啟看到 legends JSON。`, 'err');
-      console.warn('Worker pickrate load failed:', err);
-    }
-  };
-
-  window.addEventListener('load', function() {
-    const input = document.getElementById('workerUrlInput');
-    const saved = localStorage.getItem('alsWorkerUrl') || '';
-    if (input && saved) input.value = saved;
-    if (saved) setTimeout(loadWorkerPickRates, 800);
-  });
-})();
-</script>
-
-
-
-
-<script>
-(function() {
-  const WORKER_BASE_URL = "https://apex-pickrate-api.naughtytiger06.workers.dev/pickrates";
-  const DEFAULT_RANK_KEY = "Masterpred";
-
-  function getActiveRankCard() {
-    return document.querySelector(".tier-card.active-rank") ||
-           document.querySelector('.tier-card[data-pick-key="predator"]');
-  }
-
-  function getRankKeyFromCard(card) {
-    return card?.dataset?.workerKey || DEFAULT_RANK_KEY;
-  }
-
-  function getRankKeyByPickKey(pickKey) {
-    const card = document.querySelector(`.tier-card[data-pick-key="${pickKey}"]`);
-    return getRankKeyFromCard(card);
-  }
-
-  function buildWorkerUrl(rankKey = DEFAULT_RANK_KEY) {
-    const input = document.getElementById("workerUrlInput");
-    let base = (input?.value || WORKER_BASE_URL).trim();
-
-    // User may paste either /pickrates or /pickrates/Masterpred.
-    base = base.replace(/\/+$/, "");
-    base = base.replace(/\/pickrates\/(Masterpred|Diamond|Platinum|Gold|Silver)$/i, "/pickrates");
-
-    if (!/^https?:\/\//i.test(base)) base = "https://" + base;
-
-    return `${base}/${rankKey}`;
-  }
-
-  function setInputToBase() {
-    const input = document.getElementById("workerUrlInput");
-    if (input) input.value = WORKER_BASE_URL;
-    localStorage.setItem("alsWorkerBaseUrl", WORKER_BASE_URL);
-    localStorage.setItem("alsWorkerUrl", buildWorkerUrl(getRankKeyFromCard(getActiveRankCard())));
-  }
-
-  const oldSaveWorkerUrl = window.saveWorkerUrl;
-  window.saveWorkerUrl = function() {
-    const card = getActiveRankCard();
-    const rankKey = getRankKeyFromCard(card);
-    localStorage.setItem("alsWorkerUrl", buildWorkerUrl(rankKey));
-    if (typeof loadWorkerPickRates === "function") loadWorkerPickRates();
-    else if (typeof oldSaveWorkerUrl === "function") oldSaveWorkerUrl();
-  };
-
-  // Wrap switchPickRank so each rank card automatically chooses its own Worker URL key.
-  const originalSwitchPickRank = window.switchPickRank;
-  window.switchPickRank = function(key) {
-    if (typeof originalSwitchPickRank === "function") originalSwitchPickRank(key);
-
-    const rankKey = getRankKeyByPickKey(key);
-    const workerUrl = buildWorkerUrl(rankKey);
-    localStorage.setItem("alsWorkerUrl", workerUrl);
-
-    const status = document.getElementById("workerPickStatus");
-    if (status) {
-      status.className = "pick-sync-status warn";
-      status.textContent = `正在依牌位 URL key「${rankKey}」同步 ApexLegendsStatus 資料...`;
-    }
-
-    if (typeof loadWorkerPickRates === "function") {
-      setTimeout(loadWorkerPickRates, 120);
-    }
-  };
-
-  window.addEventListener("load", function() {
-    setInputToBase();
-
-    // Add tiny visible URL-key labels to help debugging; the real key is stored in data-worker-key.
-    document.querySelectorAll(".tier-card[data-worker-key]").forEach(card => {
-      if (!card.querySelector(".rank-url-key")) {
-        const s = document.createElement("div");
-        s.className = "rank-url-key";
-        s.textContent = `key: ${card.dataset.workerKey}`;
-        card.appendChild(s);
-      }
-    });
-
-    // Auto-sync the active/default rank.
-    const key = getRankKeyFromCard(getActiveRankCard());
-    localStorage.setItem("alsWorkerUrl", buildWorkerUrl(key));
-
-    if (typeof loadWorkerPickRates === "function") {
-      setTimeout(loadWorkerPickRates, 450);
-    }
-  });
-})();
-</script>
-
-
 <script>
 /* RANK_CLICK_LIVE_SYNC_FINAL_START */
 (function() {
@@ -3673,14 +3291,9 @@ window.addEventListener('load', function() {
         const grid = document.getElementById("legendGrid");
         if (grid) grid.classList.add("full-legend-grid");
       }
-      if (id === "workerLiveGrid") {
-        const grid = document.getElementById("workerLiveGrid");
-        if (grid) grid.classList.add("full-legend-grid");
-      }
     };
   }
 })();
 </script>
-
 </body>
 </html>
